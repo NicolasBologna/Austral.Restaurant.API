@@ -1,4 +1,4 @@
-﻿namespace restaurante_backend.Models.Enum;
+﻿namespace Austral.Restaurant.API.Models.Enum;
 
 public enum Label
 {

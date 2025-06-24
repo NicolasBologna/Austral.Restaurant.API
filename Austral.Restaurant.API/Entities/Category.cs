@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
-namespace restaurante_backend.Entities;
+namespace Austral.Restaurant.API.Entities;
 
 public class Category
 {
@@ -13,5 +13,4 @@ public class Category
     public User? User { get; set; } = null!;
     public int UserId { get; set; }
     public ICollection<Product> Products { get; set; } = new HashSet<Product>();
-    public ICollection<Category> Categories { get; set; } = new HashSet<Category>();
 }

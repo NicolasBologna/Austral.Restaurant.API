@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using restaurante_backend.Entities;
+using Austral.Restaurant.API.Entities;
 
-namespace restaurante_backend.Data;
+namespace Austral.Restaurant.API.Data;
 
 public class RestaurantApiContext : DbContext
 {

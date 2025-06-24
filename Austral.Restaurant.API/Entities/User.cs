@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
-namespace restaurante_backend.Entities;
+namespace Austral.Restaurant.API.Entities;
 
 public class User
 {

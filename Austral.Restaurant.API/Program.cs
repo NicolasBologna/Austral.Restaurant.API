@@ -1,3 +1,6 @@
+using Austral.Restaurant.API.Data;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -6,6 +9,11 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddDbContext<RestaurantApiContext>(dbContextOptions =>
+{
+    dbContextOptions.UseSqlServer(builder.Configuration["ConnectionStrings:RestaurantAPI"]);
+});
 
 var app = builder.Build();
 
