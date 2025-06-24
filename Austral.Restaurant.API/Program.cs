@@ -1,4 +1,8 @@
 using Austral.Restaurant.API.Data;
+using Austral.Restaurant.API.Repositories.Implementations;
+using Austral.Restaurant.API.Repositories.Interfaces;
+using Austral.Restaurant.API.Services.Implementations;
+using Austral.Restaurant.API.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,6 +18,17 @@ builder.Services.AddDbContext<RestaurantApiContext>(dbContextOptions =>
 {
     dbContextOptions.UseSqlServer(builder.Configuration["ConnectionStrings:RestaurantAPI"]);
 });
+
+
+#region Dependency Injection
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+
+builder.Services.AddScoped<IUserRepository, UserRepository>();  
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+#endregion
 
 var app = builder.Build();
 
