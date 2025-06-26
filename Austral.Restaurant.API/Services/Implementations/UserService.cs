@@ -6,24 +6,28 @@ using Austral.Restaurant.API.Repositories.Interfaces;
 using Austral.Restaurant.API.Services.Interfaces;
 using AutoMapper;
 
-namespace Austral.Restaurant.API.Services.Implementations
+namespace Austral.Restaurant.API.Services.Implementations;
+
+public class UserService(IMapper mapper, IUserRepository userRepository) : IUserService
 {
-    public class UserService : IUserService
+    private readonly IMapper _mapper = mapper;
+    private readonly IUserRepository _userRepository = userRepository;
+
+    public UserResponseDto CreateUser(CreateUserRequestDto request)
     {
-        private readonly IMapper _mapper;
-        private readonly IUserRepository _userRepository;
+        User requestUser = _mapper.Map<User>(request);
+        User createdUser = _userRepository.Create(requestUser);
+        return _mapper.Map<UserResponseDto>(createdUser);
+    }
 
-        public UserService(IMapper mapper, IUserRepository userRepository)
-        {
-            _mapper = mapper;
-            _userRepository = userRepository; 
-        }
+    public void DeleteUser(int id)
+    {
+        _userRepository.DeleteUser(id);
+    }
 
-        public UserResponseDto CreateUser(CreateUserRequestDto request)
-        {
-            User requestUser = _mapper.Map<User>(request);
-            User createdUser = _userRepository.Create(requestUser);
-            return _mapper.Map<UserResponseDto>(createdUser);
-        }
+    public IEnumerable<UserResponseDto> GetAll()
+    {
+        var users = _userRepository.GetAll();
+        return _mapper.Map<IEnumerable<UserResponseDto>>(users);
     }
 }

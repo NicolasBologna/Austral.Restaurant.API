@@ -2,7 +2,6 @@
 using Austral.Restaurant.API.Entities;
 using Austral.Restaurant.API.Models.Dtos.Requests;
 using Austral.Restaurant.API.Repositories.Interfaces;
-using Mono.TextTemplating;
 
 namespace Austral.Restaurant.API.Repositories.Implementations;
 
@@ -20,9 +19,9 @@ public class UserRepository(RestaurantApiContext context) : IUserRepository
         return _context.Users.FirstOrDefault(x => x.RestaurantName == authRequestBody.RestaurantName && x.Password == authRequestBody.Password);
     }
 
-    public List<User> GetAll()
+    public IEnumerable<User> GetAll()
     {
-        return _context.Users.ToList();
+        return _context.Users.AsEnumerable();
     }
 
     public void Update(User updatedUser, int userId)
@@ -35,37 +34,14 @@ public class UserRepository(RestaurantApiContext context) : IUserRepository
         _context.SaveChanges();
     }
 
-    public void RemoveUser(int userId)
+    public void DeleteUser(int userId)
     {
-        var user = _context.Users.SingleOrDefault(u => u.Id == userId);
+        User? user = _context.Users.FirstOrDefault(x => x.Id == userId);
         if (user is null)
         {
             throw new Exception("El cliente que intenta eliminar no existe");
         }
-
-        if (user.FirstName != "Admin")
-        {
-            Delete(userId);
-        }
-        else
-        {
-            Archive(userId);
-        }
-    }
-
-    private void Delete(int id)
-    {
-        _context.Users.Remove(_context.Users.Single(u => u.Id == id));
-        _context.SaveChanges();
-    }
-
-    private void Archive(int id)
-    {
-        User? user = _context.Users.FirstOrDefault(u => u.Id == id);
-        if (user != null)
-        {
-            //user.State = State.Archived;
-        }
+        _context.Users.Remove(user);
         _context.SaveChanges();
     }
 

@@ -1,15 +1,11 @@
 ﻿using Austral.Restaurant.API.Repositories.Interfaces;
 using Austral.Restaurant.API.Services.Interfaces;
 
-namespace Austral.Restaurant.API.Services.Implementations
+namespace Austral.Restaurant.API.Services.Implementations;
+
+public class ProductService(IProductRepository productRepository) : IProductService
 {
-    public class ProductService : IProductService
-    {
-        private readonly IProductRepository _productRepository;
+    private readonly IProductRepository _productRepository = productRepository;
 
-        public ProductService()
-        {
 
-        }
-    }
 }

@@ -7,9 +7,9 @@ namespace Austral.Restaurant.API.Repositories.Interfaces
     {
         bool CheckIfUserExists(int userId);
         User Create(User newUser);
-        List<User> GetAll();
+        IEnumerable<User> GetAll();
         User? GetById(int userId);
-        void RemoveUser(int userId);
+        void DeleteUser(int userId);
         void Update(User updatedUser, int userId);
         User? ValidateUser(AuthenticationRequestDto authRequestBody);
     }

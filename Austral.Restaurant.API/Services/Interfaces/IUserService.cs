@@ -6,6 +6,8 @@ namespace Austral.Restaurant.API.Services.Interfaces
 {
     public interface IUserService
     {
+        IEnumerable<UserResponseDto> GetAll();
         UserResponseDto CreateUser(CreateUserRequestDto request);
+        void DeleteUser(int id);
     }
 }
