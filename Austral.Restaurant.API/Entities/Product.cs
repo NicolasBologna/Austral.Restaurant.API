@@ -11,7 +11,7 @@ public class Product
     public string? Description { get; set; }
     public int Price { get; set; }
     public int CategoryId { get; set; }
-    public Category Category { get; set; }
+    public Category? Category { get; set; }
     public bool Featured { get; set; }
     public Label Label { get; set; }
     public Size Size { get; set; }

@@ -20,15 +20,19 @@ builder.Services.AddDbContext<RestaurantApiContext>(dbContextOptions =>
 });
 
 
-#region Dependency Injection
+#region Services
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
+#endregion
 
-builder.Services.AddScoped<IUserRepository, UserRepository>();  
+#region Repositories
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 #endregion
+
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 var app = builder.Build();
 

@@ -5,9 +5,9 @@ namespace Austral.Restaurant.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class CategoryController(ICategoryService categoryService) : ControllerBase
+public class UserController(IUserService userService) : ControllerBase
 {
-    private readonly ICategoryService _categoryService = categoryService;
+    private readonly IUserService _userService = userService;
 
     [HttpGet]
     public IActionResult GetAll()
