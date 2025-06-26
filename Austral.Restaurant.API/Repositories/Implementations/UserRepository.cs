@@ -25,13 +25,6 @@ public class UserRepository(RestaurantApiContext context) : IUserRepository
         return _context.Users.ToList();
     }
 
-    public int Create(User newUser)
-    {
-        var createdUser = _context.Users.Add(newUser).Entity;
-        _context.SaveChanges();
-        return createdUser.Id;
-    }
-
     public void Update(User updatedUser, int userId)
     {
         User userToUpdate = _context.Users.First(u => u.Id == userId);
@@ -71,7 +64,7 @@ public class UserRepository(RestaurantApiContext context) : IUserRepository
         User? user = _context.Users.FirstOrDefault(u => u.Id == id);
         if (user != null)
         {
-            user.State = State.Archived;
+            //user.State = State.Archived;
         }
         _context.SaveChanges();
     }
@@ -79,5 +72,12 @@ public class UserRepository(RestaurantApiContext context) : IUserRepository
     public bool CheckIfUserExists(int userId)
     {
         return _context.Users.Any(user => user.Id == userId);
+    }
+
+    public User Create(User newUser)
+    {
+        User user = _context.Users.Add(newUser).Entity;
+        _context.SaveChanges();
+        return user;
     }
 }
