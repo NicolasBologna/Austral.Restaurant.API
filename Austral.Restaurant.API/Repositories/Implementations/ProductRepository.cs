@@ -2,38 +2,32 @@
 using Austral.Restaurant.API.Entities;
 using Austral.Restaurant.API.Repositories.Interfaces;
 
-namespace Austral.Restaurant.API.Repositories.Implementations
+namespace Austral.Restaurant.API.Repositories.Implementations;
+
+public class ProductRepository(RestaurantApiContext context) : IProductRepository
 {
-    public class ProductRepository : IProductRepository
+    private readonly RestaurantApiContext _context = context;
+
+    public IEnumerable<Product> GetAllByUserId(int userId)
     {
-        private readonly RestaurantApiContext _context;
+        return _context.Products.Where(x => x.UserId == userId).ToList();
+    }
 
-        public ProductRepository(RestaurantApiContext context)
-        {
-            _context = context;
-        }
+    public Product Create(Product newProduct)
+    {
+        Product product = _context.Products.Add(newProduct).Entity;
+        _context.SaveChanges();
+        return product;
+    }
 
-        public IEnumerable<Product> GetAllByUserId(int userId)
+    public void Delete(int id)
+    {
+        Product? product = _context.Products.FirstOrDefault(x => x.Id == id);
+        if (product is null)
         {
-            return _context.Products.Where(x => x.UserId == userId).ToList();
+            throw new Exception("El producto que intenta eliminar no existe");
         }
-
-        public Product Create(Product product)
-        {
-            _context.Products.Add(product);
-            _context.SaveChanges();
-            return product;
-        }
-
-        public void Delete(int id)
-        {
-            Product? product = _context.Products.FirstOrDefault(x => x.Id == id);
-            if (product is null)
-            {
-                throw new Exception("El producto que intenta eliminar no existe");
-            }
-            _context.Products.Remove(product);
-            _context.SaveChanges();
-        }
+        _context.Products.Remove(product);
+        _context.SaveChanges();
     }
 }

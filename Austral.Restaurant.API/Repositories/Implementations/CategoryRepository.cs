@@ -1,15 +1,34 @@
 ﻿using Austral.Restaurant.API.Data;
+using Austral.Restaurant.API.Entities;
 using Austral.Restaurant.API.Repositories.Interfaces;
 
 namespace Austral.Restaurant.API.Repositories.Implementations
 {
-    public class CategoryRepository : ICategoryRepository
+    public class CategoryRepository(RestaurantApiContext context) : ICategoryRepository
     {
-        private readonly RestaurantApiContext _context;
+        private readonly RestaurantApiContext _context = context;
 
-        public CategoryRepository(RestaurantApiContext context)
+        public IEnumerable<Category> GetAll()
         {
-            _context = context;
+            return _context.Categories.ToList();
+        }
+
+        public Category Create(Category newCategory)
+        {
+            Category category = _context.Categories.Add(newCategory).Entity;
+            _context.SaveChanges();
+            return category;
+        }
+
+        public void Delete(int id)
+        {
+            Category? category = _context.Categories.FirstOrDefault(x => x.Id == id);
+            if (category is null)
+            {
+                throw new Exception("El categoria que intenta eliminar no existe");
+            }
+            _context.Categories.Remove(category);
+            _context.SaveChanges();
         }
     }
 }
