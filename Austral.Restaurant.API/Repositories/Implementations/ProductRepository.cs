@@ -8,9 +8,19 @@ public class ProductRepository(RestaurantApiContext context) : IProductRepositor
 {
     private readonly RestaurantApiContext _context = context;
 
+    public IEnumerable<Product> GetAll()
+    {
+        return _context.Products.ToList();
+    }
+
     public IEnumerable<Product> GetAllByUserId(int userId)
     {
         return _context.Products.Where(x => x.UserId == userId).ToList();
+    }
+
+    public Product? GetByProductId(int productId)
+    {
+        return _context.Products.FirstOrDefault(x => x.Id == productId);
     }
 
     public Product Create(Product newProduct)
@@ -30,4 +40,5 @@ public class ProductRepository(RestaurantApiContext context) : IProductRepositor
         _context.Products.Remove(product);
         _context.SaveChanges();
     }
+
 }

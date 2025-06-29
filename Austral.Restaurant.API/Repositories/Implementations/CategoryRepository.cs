@@ -8,9 +8,9 @@ namespace Austral.Restaurant.API.Repositories.Implementations
     {
         private readonly RestaurantApiContext _context = context;
 
-        public IEnumerable<Category> GetAll()
+        public IEnumerable<Category> GetAllByUserId(int userId)
         {
-            return _context.Categories.ToList();
+            return _context.Categories.Where(x => x.UserId == userId).ToList();
         }
 
         public Category Create(Category newCategory)

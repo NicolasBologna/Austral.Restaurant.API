@@ -10,14 +10,28 @@ namespace Austral.Restaurant.API.Controllers
     {
         private readonly IProductService _productService = productService;
 
-        [HttpGet]
+        [HttpGet("all")]
+        public IActionResult GetAll()
+        {
+            var products = _productService.GetAll();
+            return Ok(products);
+        }
+
+        [HttpGet("user/{userId}")]
         public IActionResult GetAllByUserId(int userId)
         {
             var products = _productService.GetAllByUserIdAsync(userId);
             return Ok(products);
         }
 
-        [HttpPost]
+        [HttpGet("{productId}")]
+        public IActionResult GetById(int productId)
+        {
+            var product = _productService.GetByProductId(productId);
+            return Ok(product);
+        }
+
+        [HttpPost("create")]
         public IActionResult Create(CreateProductRequestDto request)
         {
             var newProduct = _productService.Create(request);
@@ -33,7 +47,7 @@ namespace Austral.Restaurant.API.Controllers
         /// <param name="request"></param>
         /// <returns></returns>
 
-        [HttpDelete]
+        [HttpDelete("delete/{id}")]
         public IActionResult Delete(int id)
         {
             _productService.Delete(id);

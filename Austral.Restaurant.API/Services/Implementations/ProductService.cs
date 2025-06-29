@@ -18,6 +18,11 @@ public class ProductService(IProductRepository productRepository, IMapper mapper
         Product createdProduct = _productRepository.Create(product);
         return _mapper.Map<ProductResponseDto>(createdProduct);
     }
+    public IEnumerable<ProductResponseDto> GetAll()
+    {
+        IEnumerable<Product> products = _productRepository.GetAll();
+        return _mapper.Map<IEnumerable<ProductResponseDto>>(products);
+    }
 
     public IEnumerable<ProductResponseDto> GetAllByUserIdAsync(int userId)
     {
@@ -29,4 +34,11 @@ public class ProductService(IProductRepository productRepository, IMapper mapper
     {
         _productRepository.Delete(id);
     }
+
+    public ProductResponseDto GetByProductId(int productId)
+    {
+        Product? product = _productRepository.GetByProductId(productId);
+        return _mapper.Map<ProductResponseDto>(product);
+    }
+
 }

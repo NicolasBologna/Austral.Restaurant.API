@@ -4,8 +4,10 @@ namespace Austral.Restaurant.API.Repositories.Interfaces
 {
     public interface IProductRepository
     {
-        Product Create(Product product);
+        IEnumerable<Product> GetAll();
         IEnumerable<Product> GetAllByUserId(int userId);
+        Product? GetByProductId(int productId);
+        Product Create(Product product);
         void Delete(int id);
     }
 }

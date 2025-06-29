@@ -1,5 +1,4 @@
 ﻿using Austral.Restaurant.API.Models.Dtos.Requests;
-using Austral.Restaurant.API.Services.Implementations;
 using Austral.Restaurant.API.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,9 +11,9 @@ public class CategoryController(ICategoryService categoryService) : ControllerBa
     private readonly ICategoryService _categoryService = categoryService;
 
     [HttpGet]
-    public IActionResult GetAll()
+    public IActionResult GetAllByUserId(int userId)
     {
-        var categories = _categoryService.GetAll();
+        var categories = _categoryService.GetAllByUserId(userId);
         return Ok(categories);
     }
 

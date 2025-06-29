@@ -9,8 +9,8 @@ namespace Austral.Restaurant.API.Services.Implementations;
 
 public class CategoryService(ICategoryRepository categoryRepository, IMapper mapper) : ICategoryService
 {
-    private readonly ICategoryRepository _categoryRepository;
-    private readonly IMapper _mapper;
+    private readonly ICategoryRepository _categoryRepository = categoryRepository;
+    private readonly IMapper _mapper = mapper;
 
     public CategoryResponseDto Create(CreateCategoryRequestDto request)
     {
@@ -19,9 +19,9 @@ public class CategoryService(ICategoryRepository categoryRepository, IMapper map
         return _mapper.Map<CategoryResponseDto>(createdCategory);
     }
 
-    public IEnumerable<CategoryResponseDto> GetAll()
+    public IEnumerable<CategoryResponseDto> GetAllByUserId(int userId)
     {
-        var categories = _categoryRepository.GetAll();
+        var categories = _categoryRepository.GetAllByUserId(userId);
         return _mapper.Map<IEnumerable<CategoryResponseDto>>(categories);
     }
 
