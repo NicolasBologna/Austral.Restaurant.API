@@ -5,11 +5,11 @@ namespace Austral.Restaurant.API.Repositories.Interfaces;
 
 public interface IUserRepository
 {
-    bool CheckIfUserExists(int userId);
-    User Create(User newUser);
     IEnumerable<User> GetAll();
     User? GetById(int userId);
+    User Create(User newUser);
     void DeleteUser(int userId);
-    void Update(User updatedUser, int userId);
+    bool CheckIfUserExists(int userId);
     User? ValidateUser(AuthenticationRequestDto authRequestBody);
+    void SaveChanges();
 }

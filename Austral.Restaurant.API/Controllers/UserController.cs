@@ -1,7 +1,7 @@
-﻿using Austral.Restaurant.API.Models.Dtos.Requests;
+﻿using Microsoft.AspNetCore.Mvc;
+using Austral.Restaurant.API.Models.Dtos.Requests;
 using Austral.Restaurant.API.Models.Dtos.Responses;
 using Austral.Restaurant.API.Services.Interfaces;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Austral.Restaurant.API.Controllers;
 
@@ -15,36 +15,39 @@ public class UserController(IUserService userService) : ControllerBase
     public IActionResult GetAll()
     {
         var users = _userService.GetAll();
+
         return Ok(users);
     }
-    
-    /// <summary>
-    /// HTTPGET USER BY ID (usar USERRESPONSEDTO)
-    /// </summary>
-    /// <param name="request"></param>
-    /// <returns></returns>
 
+    [HttpGet("{id}")]
+    public IActionResult GetById(int id)
+    {
+        var user = _userService.GetUserById(id);
+
+        return Ok(user);
+    }
 
     [HttpPost]
     public IActionResult Create(CreateUserRequestDto request)
     {
         UserResponseDto? newUser = _userService.CreateUser(request);
+
         return Ok(newUser);
     }
 
+    [HttpPut("{id}")]
+    public IActionResult Update(int id, UpdateUserRequestDto request)
+    {
+        var updatedUser = _userService.UpdateUser(id, request);
 
-    /// <summary>
-    /// HTTPPUT para hacer el UPDATE (crear UpdateUserRequestDto)
-    /// [HttpPut("{userId}")]
-    /// public IActionResult UpdateUser(CreateAndUpdateUserDto dto, int userId)
-    /// </summary>
-    /// <param name="request"></param>
-    /// <returns></returns>
+        return Ok(updatedUser);
+    }
 
     [HttpDelete]
-    public IActionResult DeleteUser(int id)
+    public IActionResult Delete(int id)
     {
         _userService.DeleteUser(id);
+
         return Ok();
     }
 }

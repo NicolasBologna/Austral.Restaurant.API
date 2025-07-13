@@ -1,17 +1,16 @@
-﻿using Austral.Restaurant.API.Entities;
+﻿using AutoMapper;
+using Austral.Restaurant.API.Entities;
 using Austral.Restaurant.API.Models.Dtos.Requests;
 using Austral.Restaurant.API.Models.Dtos.Responses;
-using AutoMapper;
 
-namespace Austral.Restaurant.API.Profiles
+namespace Austral.Restaurant.API.Profiles;
+
+public class ProductProfile : Profile
 {
-    public class ProductProfile : Profile
+    public ProductProfile()
     {
-        public ProductProfile()
-        {
-            CreateMap<CreateProductRequestDto, Product>();
-            CreateMap<Product, ProductResponseDto>();
-            // UPDATE
-        }
+        CreateMap<CreateProductRequestDto, Product>();
+        CreateMap<Product, ProductResponseDto>();
+        // UPDATE
     }
 }

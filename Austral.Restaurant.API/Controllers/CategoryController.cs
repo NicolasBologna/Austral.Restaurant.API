@@ -1,6 +1,6 @@
-﻿using Austral.Restaurant.API.Models.Dtos.Requests;
+﻿using Microsoft.AspNetCore.Mvc;
+using Austral.Restaurant.API.Models.Dtos.Requests;
 using Austral.Restaurant.API.Services.Interfaces;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Austral.Restaurant.API.Controllers;
 
@@ -14,6 +14,7 @@ public class CategoryController(ICategoryService categoryService) : ControllerBa
     public IActionResult GetAllByUserId(int userId)
     {
         var categories = _categoryService.GetAllByUserId(userId);
+
         return Ok(categories);
     }
 
@@ -21,6 +22,7 @@ public class CategoryController(ICategoryService categoryService) : ControllerBa
     public IActionResult Create(CreateCategoryRequestDto request)
     {
         var newCategory = _categoryService.Create(request);
+
         return Ok(newCategory);
     }
 
@@ -28,6 +30,7 @@ public class CategoryController(ICategoryService categoryService) : ControllerBa
     public IActionResult Delete(int id)
     {
         _categoryService.Delete(id);
+
         return Ok();
     }
 }

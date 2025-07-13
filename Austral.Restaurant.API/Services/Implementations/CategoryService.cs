@@ -1,9 +1,9 @@
-﻿using Austral.Restaurant.API.Entities;
+﻿using AutoMapper;
+using Austral.Restaurant.API.Entities;
 using Austral.Restaurant.API.Models.Dtos.Requests;
 using Austral.Restaurant.API.Models.Dtos.Responses;
 using Austral.Restaurant.API.Repositories.Interfaces;
 using Austral.Restaurant.API.Services.Interfaces;
-using AutoMapper;
 
 namespace Austral.Restaurant.API.Services.Implementations;
 
@@ -16,12 +16,14 @@ public class CategoryService(ICategoryRepository categoryRepository, IMapper map
     {
         Category category = _mapper.Map<Category>(request);
         Category createdCategory = _categoryRepository.Create(category);
+
         return _mapper.Map<CategoryResponseDto>(createdCategory);
     }
 
     public IEnumerable<CategoryResponseDto> GetAllByUserId(int userId)
     {
         var categories = _categoryRepository.GetAllByUserId(userId);
+
         return _mapper.Map<IEnumerable<CategoryResponseDto>>(categories);
     }
 

@@ -25,20 +25,21 @@ public class ProductRepository(RestaurantApiContext context) : IProductRepositor
 
     public Product Create(Product newProduct)
     {
-        Product product = _context.Products.Add(newProduct).Entity;
+        var product = _context.Products.Add(newProduct).Entity;
         _context.SaveChanges();
+
         return product;
     }
 
     public void Delete(int id)
     {
-        Product? product = _context.Products.FirstOrDefault(x => x.Id == id);
+        var product = _context.Products.FirstOrDefault(x => x.Id == id);
+
         if (product is null)
         {
-            throw new Exception("El producto que intenta eliminar no existe");
+            throw new Exception("El producto que intenta eliminar no existe.");
         }
         _context.Products.Remove(product);
         _context.SaveChanges();
     }
-
 }
