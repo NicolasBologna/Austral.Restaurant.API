@@ -42,14 +42,13 @@ public class ProductController(IProductService productService) : ControllerBase
         return Ok(newProduct);
     }
 
+    [HttpPut("update/{productId}")]
+    public IActionResult Update(int productId, [FromBody] UpdateProductRequestDto request)
+    {
+        var updatedProduct = _productService.UpdateProduct(productId, request);
 
-    /// <summary>
-    /// HTTPPUT para hacer el UPDATE (crear UpdateUserRequestDto)
-    /// [HttpPut("{userId}")]
-    /// public IActionResult UpdateUser(CreateAndUpdateUserDto dto, int userId)
-    /// </summary>
-    /// <param name="request"></param>
-    /// <returns></returns>
+        return Ok(updatedProduct);
+    }
 
     [HttpDelete("delete/{id}")]
     public IActionResult Delete(int id)

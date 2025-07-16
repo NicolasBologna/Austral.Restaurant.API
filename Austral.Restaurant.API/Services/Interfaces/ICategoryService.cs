@@ -6,6 +6,7 @@ namespace Austral.Restaurant.API.Services.Interfaces;
 public interface ICategoryService
 {
     IEnumerable<CategoryResponseDto> GetAllByUserId(int userId);
-    CategoryResponseDto Create(CreateCategoryRequestDto request);
+    CategoryResponseDto CreateCategory(CreateCategoryRequestDto request);
+    public CategoryResponseDto UpdateCategory(int categoryId, UpdateCategoryRequestDto request);
     void Delete(int id);
 }

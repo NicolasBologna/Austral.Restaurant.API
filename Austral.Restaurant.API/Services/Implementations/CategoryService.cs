@@ -12,7 +12,7 @@ public class CategoryService(ICategoryRepository categoryRepository, IMapper map
     private readonly ICategoryRepository _categoryRepository = categoryRepository;
     private readonly IMapper _mapper = mapper;
 
-    public CategoryResponseDto Create(CreateCategoryRequestDto request)
+    public CategoryResponseDto CreateCategory(CreateCategoryRequestDto request)
     {
         Category category = _mapper.Map<Category>(request);
         Category createdCategory = _categoryRepository.Create(category);
@@ -25,6 +25,22 @@ public class CategoryService(ICategoryRepository categoryRepository, IMapper map
         var categories = _categoryRepository.GetAllByUserId(userId);
 
         return _mapper.Map<IEnumerable<CategoryResponseDto>>(categories);
+    }
+
+    public CategoryResponseDto UpdateCategory(int id, UpdateCategoryRequestDto request)
+    {
+        var category = _categoryRepository.GetById(id);
+
+        if (category == null)
+        {
+            throw new Exception("La categoría que intenta modificar no existe.");
+        }
+
+        _mapper.Map(request, category);
+
+        _categoryRepository.Update(category);
+
+        return _mapper.Map<CategoryResponseDto>(category);
     }
 
     public void Delete(int id)

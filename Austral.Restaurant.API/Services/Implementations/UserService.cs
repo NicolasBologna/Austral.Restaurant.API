@@ -40,7 +40,7 @@ public class UserService(IMapper mapper, IUserRepository userRepository) : IUser
 
         if (user == null)
         {
-            throw new Exception("El usuario no existe");
+            throw new Exception("El usuario que intenta modificar no existe.");
         }
 
         _mapper.Map(request, user);

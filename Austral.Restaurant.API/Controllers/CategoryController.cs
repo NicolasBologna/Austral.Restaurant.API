@@ -21,9 +21,17 @@ public class CategoryController(ICategoryService categoryService) : ControllerBa
     [HttpPost]
     public IActionResult Create(CreateCategoryRequestDto request)
     {
-        var newCategory = _categoryService.Create(request);
+        var newCategory = _categoryService.CreateCategory(request);
 
         return Ok(newCategory);
+    }
+
+    [HttpPut("{id}")]
+    public IActionResult Update(int id, UpdateCategoryRequestDto request)
+    {
+        var updatedCategory = _categoryService.UpdateCategory(id, request);
+
+        return Ok(updatedCategory);
     }
 
     [HttpDelete]

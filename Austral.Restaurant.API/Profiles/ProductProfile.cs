@@ -11,6 +11,6 @@ public class ProductProfile : Profile
     {
         CreateMap<CreateProductRequestDto, Product>();
         CreateMap<Product, ProductResponseDto>();
-        // UPDATE
+        CreateMap<UpdateProductRequestDto, Product>();
     }
 }

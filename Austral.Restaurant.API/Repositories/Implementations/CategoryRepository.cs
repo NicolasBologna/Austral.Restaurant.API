@@ -13,12 +13,23 @@ public class CategoryRepository(RestaurantApiContext context) : ICategoryReposit
         return _context.Categories.Where(x => x.UserId == userId).ToList();
     }
 
+    public Category? GetById(int id)
+    {
+        return _context.Categories.FirstOrDefault(x => x.Id == id);
+    }
+
     public Category Create(Category newCategory)
     {
         Category category = _context.Categories.Add(newCategory).Entity;
         _context.SaveChanges();
 
         return category;
+    }
+
+    public void Update(Category category)
+    {
+        _context.Categories.Update(category);
+        _context.SaveChanges();
     }
 
     public void Delete(int id)

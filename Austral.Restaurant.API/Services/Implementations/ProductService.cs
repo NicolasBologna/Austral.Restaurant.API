@@ -15,7 +15,7 @@ public class ProductService(IProductRepository productRepository, IMapper mapper
     public ProductResponseDto Create(CreateProductRequestDto request)
     {
         Product product = _mapper.Map<Product>(request);
-        Product createdProduct = _productRepository.Create(product);
+        Product createdProduct = _productRepository.CreateProduct(product);
 
         return _mapper.Map<ProductResponseDto>(createdProduct);
     }
@@ -33,9 +33,24 @@ public class ProductService(IProductRepository productRepository, IMapper mapper
         return _mapper.Map<IEnumerable<ProductResponseDto>>(products);
     }
 
+    public ProductResponseDto UpdateProduct(int id, UpdateProductRequestDto request)
+    {
+        var existingProduct = _productRepository.GetByProductId(id);
+
+        if (existingProduct == null)
+        {
+            throw new Exception("El producto que intenta modificar no existe.");
+        }
+
+        _mapper.Map(request, existingProduct);
+        _productRepository.UpdateProduct(existingProduct);
+
+        return _mapper.Map<ProductResponseDto>(existingProduct);
+    }
+
     public void Delete(int id)
     {
-        _productRepository.Delete(id);
+        _productRepository.DeleteProduct(id);
     }
 
     public ProductResponseDto GetByProductId(int productId)

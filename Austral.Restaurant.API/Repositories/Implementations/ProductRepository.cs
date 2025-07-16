@@ -23,7 +23,7 @@ public class ProductRepository(RestaurantApiContext context) : IProductRepositor
         return _context.Products.FirstOrDefault(x => x.Id == productId);
     }
 
-    public Product Create(Product newProduct)
+    public Product CreateProduct(Product newProduct)
     {
         var product = _context.Products.Add(newProduct).Entity;
         _context.SaveChanges();
@@ -31,7 +31,13 @@ public class ProductRepository(RestaurantApiContext context) : IProductRepositor
         return product;
     }
 
-    public void Delete(int id)
+    public void UpdateProduct(Product product)
+    {
+        _context.Products.Update(product);
+        _context.SaveChanges();
+    }
+
+    public void DeleteProduct(int id)
     {
         var product = _context.Products.FirstOrDefault(x => x.Id == id);
 
