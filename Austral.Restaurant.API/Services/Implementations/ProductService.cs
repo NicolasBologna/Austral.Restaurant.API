@@ -19,6 +19,7 @@ public class ProductService(IProductRepository productRepository, IMapper mapper
 
         return _mapper.Map<ProductResponseDto>(createdProduct);
     }
+
     public IEnumerable<ProductResponseDto> GetAll()
     {
         IEnumerable<Product> products = _productRepository.GetAll();
@@ -33,9 +34,15 @@ public class ProductService(IProductRepository productRepository, IMapper mapper
         return _mapper.Map<IEnumerable<ProductResponseDto>>(products);
     }
 
+    public IEnumerable<ProductResponseDto> GetDiscountedProducts(int userId, int categoryId)
+    {
+        IEnumerable<Product> products = _productRepository.GetDiscountedByUserAndCategory(userId, categoryId);
+        return _mapper.Map<IEnumerable<ProductResponseDto>>(products);
+    }
+
     public ProductResponseDto UpdateProduct(int id, UpdateProductRequestDto request)
     {
-        var existingProduct = _productRepository.GetByProductId(id);
+        Product? existingProduct = _productRepository.GetByProductId(id);
 
         if (existingProduct == null)
         {
@@ -46,6 +53,35 @@ public class ProductService(IProductRepository productRepository, IMapper mapper
         _productRepository.UpdateProduct(existingProduct);
 
         return _mapper.Map<ProductResponseDto>(existingProduct);
+    }
+
+    public ProductResponseDto ActivateHappyHour(int productId)
+    {
+        Product? product = _productRepository.GetByProductId(productId);
+        if (product == null)
+        {
+            throw new Exception("Producto no encontrado.");
+        }
+
+        product.HasHappyHour = true;
+        _productRepository.UpdateProduct(product);
+
+        return _mapper.Map<ProductResponseDto>(product);
+    }
+
+    public ProductResponseDto SetDiscount(int productId, int discount)
+    {
+        if (discount < 0 || discount > 100)
+            throw new ArgumentException("El descuento debe estar entre 0 y 100.");
+
+        Product? product = _productRepository.GetByProductId(productId);
+        if (product == null)
+            throw new Exception("Producto no encontrado.");
+
+        product.Discount = discount;
+        _productRepository.UpdateProduct(product);
+
+        return _mapper.Map<ProductResponseDto>(product);
     }
 
     public void Delete(int id)

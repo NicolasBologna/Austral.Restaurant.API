@@ -23,6 +23,14 @@ public class ProductRepository(RestaurantApiContext context) : IProductRepositor
         return _context.Products.FirstOrDefault(x => x.Id == productId);
     }
 
+    public IEnumerable<Product> GetDiscountedByUserAndCategory(int userId, int categoryId)
+    {
+        return _context.Products.Where(p => p.UserId == userId 
+            && p.CategoryId == categoryId 
+            && p.Discount.HasValue && p.Discount > 0)
+            .ToList();
+    }
+
     public Product CreateProduct(Product newProduct)
     {
         var product = _context.Products.Add(newProduct).Entity;

@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Austral.Restaurant.API.Models.Dtos.Requests;
+﻿using Austral.Restaurant.API.Models.Dtos.Requests;
 using Austral.Restaurant.API.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Austral.Restaurant.API.Controllers;
 
@@ -11,6 +12,7 @@ public class CategoryController(ICategoryService categoryService) : ControllerBa
     private readonly ICategoryService _categoryService = categoryService;
 
     [HttpGet]
+    [AllowAnonymous]
     public IActionResult GetAllByUserId(int userId)
     {
         var categories = _categoryService.GetAllByUserId(userId);

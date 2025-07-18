@@ -12,4 +12,5 @@ public interface IUserRepository
     bool CheckIfUserExists(int userId);
     User? ValidateUser(AuthenticationRequestDto authRequestBody);
     void SaveChanges();
+    bool RestaurantNameExists(string restaurantName);
 }

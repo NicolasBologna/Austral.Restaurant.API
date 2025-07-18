@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Austral.Restaurant.API.Models.Dtos.Requests;
+﻿using Austral.Restaurant.API.Models.Dtos.Requests;
 using Austral.Restaurant.API.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Austral.Restaurant.API.Controllers;
 
@@ -11,6 +12,7 @@ public class ProductController(IProductService productService) : ControllerBase
     private readonly IProductService _productService = productService;
 
     [HttpGet("all")]
+    [AllowAnonymous]
     public IActionResult GetAll()
     {
         var products = _productService.GetAll();
@@ -19,6 +21,7 @@ public class ProductController(IProductService productService) : ControllerBase
     }
 
     [HttpGet("user/{userId}")]
+    [AllowAnonymous]
     public IActionResult GetAllByUserId(int userId)
     {
         var products = _productService.GetAllByUserIdAsync(userId);
@@ -27,6 +30,7 @@ public class ProductController(IProductService productService) : ControllerBase
     }
 
     [HttpGet("{productId}")]
+    [AllowAnonymous]
     public IActionResult GetById(int productId)
     {
         var product = _productService.GetByProductId(productId);
@@ -48,6 +52,28 @@ public class ProductController(IProductService productService) : ControllerBase
         var updatedProduct = _productService.UpdateProduct(productId, request);
 
         return Ok(updatedProduct);
+    }
+
+    [HttpPut("happyhour/{productId}")]
+    public IActionResult ActivateHappyHour(int productId)
+    {
+        var updatedProduct = _productService.ActivateHappyHour(productId);
+        return Ok(updatedProduct);
+    }
+
+    [HttpPut("discount/{productId}")]
+    public IActionResult SetDiscount(int productId, [FromQuery] int discount)
+    {
+        var updatedProduct = _productService.SetDiscount(productId, discount);
+        return Ok(updatedProduct);
+    }
+
+    [HttpGet("discounted")]
+    [AllowAnonymous]
+    public IActionResult GetDiscountedProducts([FromQuery] int userId, [FromQuery] int categoryId)
+    {
+        var products = _productService.GetDiscountedProducts(userId, categoryId);
+        return Ok(products);
     }
 
     [HttpDelete("delete/{id}")]

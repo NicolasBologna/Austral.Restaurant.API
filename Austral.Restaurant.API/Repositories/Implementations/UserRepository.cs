@@ -50,6 +50,11 @@ public class UserRepository(RestaurantApiContext context) : IUserRepository
         return _context.Users.FirstOrDefault(x => x.RestaurantName == authRequestBody.RestaurantName && x.Password == authRequestBody.Password);
     }
 
+    public bool RestaurantNameExists(string restaurantName)
+    {
+        return _context.Users.Any(u => u.RestaurantName.ToLower() == restaurantName.ToLower());
+    }
+
     public void SaveChanges()
     {
         _context.SaveChanges();

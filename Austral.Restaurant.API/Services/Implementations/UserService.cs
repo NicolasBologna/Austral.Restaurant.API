@@ -28,6 +28,9 @@ public class UserService(IMapper mapper, IUserRepository userRepository) : IUser
 
     public UserResponseDto CreateUser(CreateUserRequestDto request)
     {
+        if (_userRepository.RestaurantNameExists(request.RestaurantName)) 
+            throw new Exception("Ya existe un usuario con ese nombre de restaurante.");
+
         var requestUser = _mapper.Map<User>(request);
         var createdUser = _userRepository.Create(requestUser);
 
@@ -52,5 +55,11 @@ public class UserService(IMapper mapper, IUserRepository userRepository) : IUser
     public void DeleteUser(int id)
     {
         _userRepository.DeleteUser(id);
+    }
+
+    public UserResponseDto? ValidateUser(AuthenticationRequestDto authentication)
+    {
+        var user = _userRepository.ValidateUser(authentication);
+        return _mapper.Map<UserResponseDto>(user);
     }
 }
