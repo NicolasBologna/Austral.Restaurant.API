@@ -12,14 +12,6 @@ public class CategoryService(ICategoryRepository categoryRepository, IMapper map
     private readonly ICategoryRepository _categoryRepository = categoryRepository;
     private readonly IMapper _mapper = mapper;
 
-    public CategoryResponseDto CreateCategory(CreateCategoryRequestDto request)
-    {
-        Category category = _mapper.Map<Category>(request);
-        Category createdCategory = _categoryRepository.Create(category);
-
-        return _mapper.Map<CategoryResponseDto>(createdCategory);
-    }
-
     public IEnumerable<CategoryResponseDto> GetAllByUserId(int userId)
     {
         var categories = _categoryRepository.GetAllByUserId(userId);
@@ -27,7 +19,17 @@ public class CategoryService(ICategoryRepository categoryRepository, IMapper map
         return _mapper.Map<IEnumerable<CategoryResponseDto>>(categories);
     }
 
-    public CategoryResponseDto UpdateCategory(int id, UpdateCategoryRequestDto request)
+    public CategoryResponseDto CreateCategory(CreateCategoryRequestDto createCategoryRequest, int userId)
+    {
+        var category = _mapper.Map<Category>(createCategoryRequest);
+        category.UserId = userId;
+
+        var createdCategory = _categoryRepository.Create(category);
+
+        return _mapper.Map<CategoryResponseDto>(createdCategory);
+    }
+
+    public CategoryResponseDto UpdateCategory(int id, UpdateCategoryRequestDto updateCategoryRequest)
     {
         var category = _categoryRepository.GetById(id);
 
@@ -36,7 +38,7 @@ public class CategoryService(ICategoryRepository categoryRepository, IMapper map
             throw new Exception("La categoría que intenta modificar no existe.");
         }
 
-        _mapper.Map(request, category);
+        _mapper.Map(updateCategoryRequest, category);
 
         _categoryRepository.Update(category);
 
