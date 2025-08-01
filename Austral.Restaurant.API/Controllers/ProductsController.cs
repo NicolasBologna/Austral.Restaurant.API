@@ -1,17 +1,18 @@
-﻿using Austral.Restaurant.API.Models.Dtos.Requests;
-using Austral.Restaurant.API.Services.Interfaces;
+﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Austral.Restaurant.API.Models.Dtos.Requests;
+using Austral.Restaurant.API.Services.Interfaces;
 
 namespace Austral.Restaurant.API.Controllers;
 
-[Route("api/[controller]")]
+[Route("api/products")]
 [ApiController]
-public class ProductController(IProductService productService) : ControllerBase
+public class ProductsController(IProductService productService) : ControllerBase
 {
     private readonly IProductService _productService = productService;
 
-    [HttpGet("all")]
+    [HttpGet]
     [AllowAnonymous]
     public IActionResult GetAll()
     {
@@ -20,10 +21,11 @@ public class ProductController(IProductService productService) : ControllerBase
         return Ok(products);
     }
 
-    [HttpGet("user/{userId}")]
+    [HttpGet("me")]
     [AllowAnonymous]
-    public IActionResult GetAllByUserId(int userId)
+    public IActionResult GetMyProducts()
     {
+        int userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "");
         var products = _productService.GetAllByUserIdAsync(userId);
 
         return Ok(products);
@@ -38,7 +40,7 @@ public class ProductController(IProductService productService) : ControllerBase
         return Ok(product);
     }
 
-    [HttpPost("create")]
+    [HttpPost]
     public IActionResult Create(CreateProductRequestDto request)
     {
         var newProduct = _productService.Create(request);
@@ -46,7 +48,7 @@ public class ProductController(IProductService productService) : ControllerBase
         return Ok(newProduct);
     }
 
-    [HttpPut("update/{productId}")]
+    [HttpPut("{productId}")]
     public IActionResult Update(int productId, [FromBody] UpdateProductRequestDto request)
     {
         var updatedProduct = _productService.UpdateProduct(productId, request);
@@ -54,17 +56,19 @@ public class ProductController(IProductService productService) : ControllerBase
         return Ok(updatedProduct);
     }
 
-    [HttpPut("happyhour/{productId}")]
+    [HttpPut("{productId}/happyHour")]
     public IActionResult ActivateHappyHour(int productId)
     {
         var updatedProduct = _productService.ActivateHappyHour(productId);
+
         return Ok(updatedProduct);
     }
 
-    [HttpPut("discount/{productId}")]
+    [HttpPut("{productId}/discount")]
     public IActionResult SetDiscount(int productId, [FromQuery] int discount)
     {
         var updatedProduct = _productService.SetDiscount(productId, discount);
+
         return Ok(updatedProduct);
     }
 
@@ -73,13 +77,14 @@ public class ProductController(IProductService productService) : ControllerBase
     public IActionResult GetDiscountedProducts([FromQuery] int userId, [FromQuery] int categoryId)
     {
         var products = _productService.GetDiscountedProducts(userId, categoryId);
+
         return Ok(products);
     }
 
-    [HttpDelete("delete/{id}")]
-    public IActionResult Delete(int id)
+    [HttpDelete("{productId}")]
+    public IActionResult Delete(int productId)
     {
-        _productService.Delete(id);
+        _productService.Delete(productId);
 
         return Ok();
     }
