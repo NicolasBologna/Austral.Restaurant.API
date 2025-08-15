@@ -72,10 +72,10 @@ public class ProductsController(IProductService productService) : ControllerBase
         return Ok(updatedProduct);
     }
 
-    [HttpGet("discounted")]
-    [AllowAnonymous]
-    public IActionResult GetDiscountedProducts([FromQuery] int userId, [FromQuery] int categoryId)
+    [HttpGet("me/discounted")]
+    public IActionResult GetMyDiscountedProducts([FromQuery] int categoryId)
     {
+        int userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "");
         var products = _productService.GetDiscountedProducts(userId, categoryId);
 
         return Ok(products);
