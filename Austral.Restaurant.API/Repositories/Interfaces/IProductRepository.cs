@@ -7,7 +7,7 @@ public interface IProductRepository
     IEnumerable<Product> GetAll();
     IEnumerable<Product> GetAllByUserId(int userId);
     Product? GetByProductId(int productId);
-    IEnumerable<Product> GetDiscountedByUserAndCategory(int userId, int categoryId);
+    IEnumerable<Product> GetProductsByFilter(int userId, int? categoryId, bool discounted);
     Product CreateProduct(Product product);
     void UpdateProduct(Product product);
     void DeleteProduct(int id);

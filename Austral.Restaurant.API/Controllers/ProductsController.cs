@@ -12,21 +12,20 @@ public class ProductsController(IProductService productService) : ControllerBase
 {
     private readonly IProductService _productService = productService;
 
-    [HttpGet]
+    [HttpGet("~/api/users/{userId}/products")]
     [AllowAnonymous]
-    public IActionResult GetAll()
+    public IActionResult GetAll(int userId, [FromQuery] int? categoryId, [FromQuery] bool discounted)
     {
-        var products = _productService.GetAll();
-
+        var products = _productService.GetAllByUserIdAsync(userId, categoryId, discounted);
         return Ok(products);
     }
 
     [HttpGet("me")]
     [AllowAnonymous]
-    public IActionResult GetMyProducts()
+    public IActionResult GetMyProducts([FromQuery] int categoryId, [FromQuery] bool discounted)
     {
         int userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "");
-        var products = _productService.GetAllByUserIdAsync(userId);
+        var products = _productService.GetAllByUserIdAsync(userId, categoryId, discounted);
 
         return Ok(products);
     }
@@ -70,15 +69,6 @@ public class ProductsController(IProductService productService) : ControllerBase
         var updatedProduct = _productService.SetDiscount(productId, discount);
 
         return Ok(updatedProduct);
-    }
-
-    [HttpGet("me/discounted")]
-    public IActionResult GetMyDiscountedProducts([FromQuery] int categoryId)
-    {
-        int userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "");
-        var products = _productService.GetDiscountedProducts(userId, categoryId);
-
-        return Ok(products);
     }
 
     [HttpDelete("{productId}")]

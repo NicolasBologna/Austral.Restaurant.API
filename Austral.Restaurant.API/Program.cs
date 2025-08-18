@@ -5,6 +5,7 @@ using Austral.Restaurant.API.Repositories.Interfaces;
 using Austral.Restaurant.API.Services.Implementations;
 using Austral.Restaurant.API.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,8 +13,28 @@ const string AllowAllPolicy = "AllowAll";
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(setupAction =>
+{
+    setupAction.AddSecurityDefinition("RestaurantApiBearerAuth", new OpenApiSecurityScheme()
+    {
+        Type = SecuritySchemeType.Http,
+        Scheme = "Bearer",
+        Description = "Acá pegar el token generado al loguearse."
+    });
 
+    setupAction.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "RestaurantApiBearerAuth" }
+
+                }, new List<string>() }
+    });
+});
 builder.Services.AddDbContext<RestaurantApiContext>(dbContextOptions =>
 {
     dbContextOptions.UseSqlServer(builder.Configuration["ConnectionStrings:RestaurantAPI"]);

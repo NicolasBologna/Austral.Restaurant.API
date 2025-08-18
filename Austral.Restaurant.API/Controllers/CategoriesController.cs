@@ -1,18 +1,19 @@
-﻿using System.Security.Claims;
+﻿using Austral.Restaurant.API.Models.Dtos.Requests;
+using Austral.Restaurant.API.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Austral.Restaurant.API.Models.Dtos.Requests;
-using Austral.Restaurant.API.Services.Interfaces;
+using System.Security.Claims;
 
 namespace Austral.Restaurant.API.Controllers;
 
 [Route("api/categories")]
+[Authorize]
 [ApiController]
 public class CategoriesController(ICategoryService categoryService) : ControllerBase
 {
     private readonly ICategoryService _categoryService = categoryService;
 
-    [HttpGet]
+    [HttpGet("~/api/users/{userId}/categories")]
     [AllowAnonymous]
     public IActionResult GetAllByUserId(int userId)
     {

@@ -27,19 +27,6 @@ public class ProductService(IProductRepository productRepository, IMapper mapper
         return _mapper.Map<IEnumerable<ProductResponseDto>>(products);
     }
 
-    public IEnumerable<ProductResponseDto> GetAllByUserIdAsync(int userId)
-    {
-        IEnumerable<Product> products = _productRepository.GetAllByUserId(userId);
-
-        return _mapper.Map<IEnumerable<ProductResponseDto>>(products);
-    }
-
-    public IEnumerable<ProductResponseDto> GetDiscountedProducts(int userId, int categoryId)
-    {
-        IEnumerable<Product> products = _productRepository.GetDiscountedByUserAndCategory(userId, categoryId);
-        return _mapper.Map<IEnumerable<ProductResponseDto>>(products);
-    }
-
     public ProductResponseDto UpdateProduct(int id, UpdateProductRequestDto request)
     {
         Product? existingProduct = _productRepository.GetByProductId(id);
@@ -94,5 +81,11 @@ public class ProductService(IProductRepository productRepository, IMapper mapper
         Product? product = _productRepository.GetByProductId(productId);
 
         return _mapper.Map<ProductResponseDto>(product);
+    }
+
+    public IEnumerable<ProductResponseDto> GetAllByUserIdAsync(int userId, int? categoryId = null, bool discounted = false)
+    {
+        IEnumerable<Product> products = _productRepository.GetProductsByFilter(userId, categoryId, discounted);
+        return _mapper.Map<IEnumerable<ProductResponseDto>>(products);
     }
 }
