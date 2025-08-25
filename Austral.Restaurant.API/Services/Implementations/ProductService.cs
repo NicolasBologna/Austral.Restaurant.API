@@ -12,18 +12,24 @@ public class ProductService(IProductRepository productRepository, IMapper mapper
     private readonly IProductRepository _productRepository = productRepository;
     private readonly IMapper _mapper = mapper;
 
-    public ProductResponseDto Create(CreateProductRequestDto request)
+    public ProductResponseDto CreateForUser(CreateProductRequestDto request, int userId)
     {
-        Product product = _mapper.Map<Product>(request);
-        Product createdProduct = _productRepository.CreateProduct(product);
+        var product = _mapper.Map<Product>(request);
 
-        return _mapper.Map<ProductResponseDto>(createdProduct);
+        product.UserId = userId;
+        product.User = null;
+        product.Category = null;
+
+        var created = _productRepository.CreateProduct(product);
+
+        var withCategory = _productRepository.GetByProductId(created.Id);
+
+        return _mapper.Map<ProductResponseDto>(withCategory);
     }
 
     public IEnumerable<ProductResponseDto> GetAll()
     {
         IEnumerable<Product> products = _productRepository.GetAll();
-
         return _mapper.Map<IEnumerable<ProductResponseDto>>(products);
     }
 
@@ -32,28 +38,28 @@ public class ProductService(IProductRepository productRepository, IMapper mapper
         Product? existingProduct = _productRepository.GetByProductId(id);
 
         if (existingProduct == null)
-        {
             throw new Exception("El producto que intenta modificar no existe.");
-        }
 
         _mapper.Map(request, existingProduct);
         _productRepository.UpdateProduct(existingProduct);
 
-        return _mapper.Map<ProductResponseDto>(existingProduct);
+        var withCategory = _productRepository.GetByProductId(existingProduct.Id);
+
+        return _mapper.Map<ProductResponseDto>(withCategory);
     }
 
     public ProductResponseDto ActivateHappyHour(int productId)
     {
         Product? product = _productRepository.GetByProductId(productId);
         if (product == null)
-        {
             throw new Exception("Producto no encontrado.");
-        }
 
         product.HasHappyHour = true;
         _productRepository.UpdateProduct(product);
 
-        return _mapper.Map<ProductResponseDto>(product);
+        var withCategory = _productRepository.GetByProductId(product.Id);
+
+        return _mapper.Map<ProductResponseDto>(withCategory);
     }
 
     public ProductResponseDto SetDiscount(int productId, int discount)
@@ -68,7 +74,9 @@ public class ProductService(IProductRepository productRepository, IMapper mapper
         product.Discount = discount;
         _productRepository.UpdateProduct(product);
 
-        return _mapper.Map<ProductResponseDto>(product);
+        var withCategory = _productRepository.GetByProductId(product.Id);
+
+        return _mapper.Map<ProductResponseDto>(withCategory);
     }
 
     public void Delete(int id)
@@ -79,7 +87,6 @@ public class ProductService(IProductRepository productRepository, IMapper mapper
     public ProductResponseDto GetByProductId(int productId)
     {
         Product? product = _productRepository.GetByProductId(productId);
-
         return _mapper.Map<ProductResponseDto>(product);
     }
 

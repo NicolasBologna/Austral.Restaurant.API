@@ -1,6 +1,7 @@
 ﻿using Austral.Restaurant.API.Data;
 using Austral.Restaurant.API.Entities;
 using Austral.Restaurant.API.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace Austral.Restaurant.API.Repositories.Implementations;
 
@@ -10,37 +11,50 @@ public class ProductRepository(RestaurantApiContext context) : IProductRepositor
 
     public IEnumerable<Product> GetAll()
     {
-        return _context.Products.ToList();
+        return _context.Products
+            .Include(p => p.Category)
+            .AsNoTracking()
+            .ToList();
     }
 
     public IEnumerable<Product> GetAllByUserId(int userId)
     {
-        return _context.Products.Where(x => x.UserId == userId).ToList();
+        return _context.Products
+            .Include(p => p.Category)
+            .AsNoTracking()
+            .Where(x => x.UserId == userId)
+            .ToList();
     }
 
     public Product? GetByProductId(int productId)
     {
-        return _context.Products.FirstOrDefault(x => x.Id == productId);
+        return _context.Products
+            .Include(p => p.Category)
+            .AsNoTracking()
+            .FirstOrDefault(x => x.Id == productId);
     }
 
     public IEnumerable<Product> GetProductsByFilter(int userId, int? categoryId, bool discounted)
     {
-        if (categoryId is null)
+        var query = _context.Products
+            .Include(p => p.Category)
+            .AsNoTracking()
+            .Where(p => p.UserId == userId && p.Discount.HasValue == discounted);
+
+        if (categoryId is not null)
         {
-            return _context.Products.Where(p => p.UserId == userId 
-                && p.Discount.HasValue == discounted).ToList();
+            query = query.Where(p => p.CategoryId == categoryId);
         }
 
-        return _context.Products.Where(p => p.UserId == userId 
-            && p.CategoryId == categoryId 
-            && p.Discount.HasValue == discounted)
-            .ToList();
+        return query.ToList();
     }
 
     public Product CreateProduct(Product newProduct)
     {
         var product = _context.Products.Add(newProduct).Entity;
         _context.SaveChanges();
+
+        _context.Entry(product).Reference(p => p.Category).Load();
 
         return product;
     }
@@ -59,6 +73,8 @@ public class ProductRepository(RestaurantApiContext context) : IProductRepositor
         {
             throw new Exception("El producto que intenta eliminar no existe.");
         }
+
+
         _context.Products.Remove(product);
         _context.SaveChanges();
     }

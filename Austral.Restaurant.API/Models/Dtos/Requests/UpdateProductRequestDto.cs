@@ -9,8 +9,7 @@ public class UpdateProductRequestDto
     public int Price { get; set; }
     public int CategoryId { get; set; }
     public bool Featured { get; set; }
-    public Label Label { get; set; }
-    public Size Size { get; set; }
+    public List<Label> Labels { get; set; } = new();
     public int? RecommendedFor { get; set; }
     public int? Discount { get; set; }
     public bool HasHappyHour { get; set; }

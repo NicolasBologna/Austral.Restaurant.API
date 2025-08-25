@@ -17,5 +17,12 @@ public class RestaurantApiContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<Product>()
+            .HasOne(p => p.User)
+            .WithMany(u => u.Products)
+            .HasForeignKey(p => p.UserId)
+            .IsRequired()
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }

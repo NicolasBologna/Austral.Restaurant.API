@@ -20,11 +20,18 @@ public class ProductsController(IProductService productService) : ControllerBase
         return Ok(products);
     }
 
+    [Authorize]
     [HttpGet("me")]
-    [AllowAnonymous]
-    public IActionResult GetMyProducts([FromQuery] int categoryId, [FromQuery] bool discounted)
+    public IActionResult GetMyProducts([FromQuery] int? categoryId, [FromQuery] bool discounted)
     {
-        int userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "");
+        var userIdStr = User.FindFirst(ClaimTypes.NameIdentifier)?.Value
+                        ?? User.FindFirst("sub")?.Value;
+
+        if (!int.TryParse(userIdStr, out var userId))
+        {
+            return Unauthorized("Token sin userId válido.");
+        }
+
         var products = _productService.GetAllByUserIdAsync(userId, categoryId, discounted);
 
         return Ok(products);
@@ -39,10 +46,19 @@ public class ProductsController(IProductService productService) : ControllerBase
         return Ok(product);
     }
 
+    [Authorize]
     [HttpPost]
-    public IActionResult Create(CreateProductRequestDto request)
+    public IActionResult Create([FromBody] CreateProductRequestDto request)
     {
-        var newProduct = _productService.Create(request);
+        var userIdStr = User.FindFirst(ClaimTypes.NameIdentifier)?.Value
+                        ?? User.FindFirst("sub")?.Value;
+
+        if (!int.TryParse(userIdStr, out var userId))
+        {
+            return Unauthorized("Token sin userId válido.");
+        }
+
+        var newProduct = _productService.CreateForUser(request, userId);
 
         return Ok(newProduct);
     }

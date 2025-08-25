@@ -3,6 +3,7 @@ using Austral.Restaurant.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Austral.Restaurant.API.Migrations
 {
     [DbContext(typeof(RestaurantApiContext))]
-    partial class RestaurantApiContextModelSnapshot : ModelSnapshot
+    [Migration("20250825222913_MakeUserIdRequiredInProducts")]
+    partial class MakeUserIdRequiredInProducts
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -150,7 +153,7 @@ namespace Austral.Restaurant.API.Migrations
                     b.HasOne("Austral.Restaurant.API.Entities.User", "User")
                         .WithMany("Products")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Category");

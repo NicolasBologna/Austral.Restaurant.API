@@ -1,17 +1,22 @@
+using System.Text.Json.Serialization;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using Austral.Restaurant.API.Data;
 using Austral.Restaurant.API.Extensions;
 using Austral.Restaurant.API.Repositories.Implementations;
 using Austral.Restaurant.API.Repositories.Interfaces;
 using Austral.Restaurant.API.Services.Implementations;
 using Austral.Restaurant.API.Services.Interfaces;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
 const string AllowAllPolicy = "AllowAll";
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(o =>
+{
+    o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+});
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(setupAction =>
 {
@@ -61,7 +66,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy(AllowAllPolicy, policy =>
     {
-        policy.AllowAnyOrigin() 
+        policy.AllowAnyOrigin()
               .AllowAnyMethod()
               .AllowAnyHeader();
     });
@@ -71,15 +76,15 @@ var app = builder.Build();
 
 //if (app.Environment.IsDevelopment())
 //{
-    app.UseSwagger();
-    app.UseSwaggerUI();
+app.UseSwagger();
+app.UseSwaggerUI();
 //}
 
 app.UseHttpsRedirection();
 
 app.UseCors(AllowAllPolicy);
 
-app.UseAuthentication(); 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

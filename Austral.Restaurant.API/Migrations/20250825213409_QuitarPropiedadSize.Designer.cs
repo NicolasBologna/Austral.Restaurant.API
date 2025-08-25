@@ -3,6 +3,7 @@ using Austral.Restaurant.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Austral.Restaurant.API.Migrations
 {
     [DbContext(typeof(RestaurantApiContext))]
-    partial class RestaurantApiContextModelSnapshot : ModelSnapshot
+    [Migration("20250825213409_QuitarPropiedadSize")]
+    partial class QuitarPropiedadSize
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -66,7 +69,7 @@ namespace Austral.Restaurant.API.Migrations
                     b.Property<bool>("HasHappyHour")
                         .HasColumnType("bit");
 
-                    b.Property<int>("Labels")
+                    b.Property<int>("Label")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
@@ -79,7 +82,7 @@ namespace Austral.Restaurant.API.Migrations
                     b.Property<int?>("RecommendedFor")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserId")
+                    b.Property<int?>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -149,9 +152,7 @@ namespace Austral.Restaurant.API.Migrations
 
                     b.HasOne("Austral.Restaurant.API.Entities.User", "User")
                         .WithMany("Products")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
 
                     b.Navigation("Category");
 
