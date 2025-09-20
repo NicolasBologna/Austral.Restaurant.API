@@ -54,7 +54,7 @@ public class ProductService(IProductRepository productRepository, IMapper mapper
         if (product == null)
             throw new Exception("Producto no encontrado.");
 
-        product.HasHappyHour = true;
+        product.HasHappyHour = !product.HasHappyHour;
         _productRepository.UpdateProduct(product);
 
         var withCategory = _productRepository.GetByProductId(product.Id);
