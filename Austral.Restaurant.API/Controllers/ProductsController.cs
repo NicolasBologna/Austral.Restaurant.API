@@ -43,6 +43,11 @@ public class ProductsController(IProductService productService) : ControllerBase
     {
         var product = _productService.GetByProductId(productId);
 
+        if (product is null)
+        {
+            return BadRequest("El producto indicado no existe.");
+        }
+
         return Ok(product);
     }
 

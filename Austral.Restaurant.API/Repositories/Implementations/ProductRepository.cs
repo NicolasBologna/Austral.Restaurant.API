@@ -39,7 +39,16 @@ public class ProductRepository(RestaurantApiContext context) : IProductRepositor
         var query = _context.Products
             .Include(p => p.Category)
             .AsNoTracking()
-            .Where(p => p.UserId == userId && p.Discount.HasValue == discounted);
+            .Where(p => p.UserId == userId);
+
+        if (discounted)
+        {
+            query = query.Where(p => p.Discount.HasValue && p.Discount > 0);
+        }
+        else
+        {
+            query = query.Where(p => !p.Discount.HasValue || p.Discount == 0);
+        }
 
         if (categoryId is not null)
         {
