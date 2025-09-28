@@ -45,10 +45,6 @@ public class ProductRepository(RestaurantApiContext context) : IProductRepositor
         {
             query = query.Where(p => p.Discount.HasValue && p.Discount > 0);
         }
-        else
-        {
-            query = query.Where(p => !p.Discount.HasValue || p.Discount == 0);
-        }
 
         if (categoryId is not null)
         {

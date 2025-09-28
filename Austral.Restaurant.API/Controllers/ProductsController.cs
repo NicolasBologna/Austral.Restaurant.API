@@ -85,9 +85,9 @@ public class ProductsController(IProductService productService) : ControllerBase
     }
 
     [HttpPut("{productId}/discount")]
-    public IActionResult SetDiscount(int productId, [FromQuery] int discount)
+    public IActionResult SetDiscount(int productId, [FromBody] SetDiscountRequestDto request)
     {
-        var updatedProduct = _productService.SetDiscount(productId, discount);
+        var updatedProduct = _productService.SetDiscount(productId, request.Discount);
 
         return Ok(updatedProduct);
     }
