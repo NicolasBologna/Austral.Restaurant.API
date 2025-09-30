@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Austral.Restaurant.API.Models.Dtos.Requests;
+﻿using Austral.Restaurant.API.Models.Dtos.Requests;
 using Austral.Restaurant.API.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Austral.Restaurant.API.Controllers;
 
+[Authorize]
 [Route("api/users")]
 [ApiController]
 public class UsersController(IUserService userService) : ControllerBase

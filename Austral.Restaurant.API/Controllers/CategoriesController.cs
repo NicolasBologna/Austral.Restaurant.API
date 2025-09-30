@@ -6,8 +6,8 @@ using System.Security.Claims;
 
 namespace Austral.Restaurant.API.Controllers;
 
-[Route("api/categories")]
 [Authorize]
+[Route("api/categories")]
 [ApiController]
 public class CategoriesController(ICategoryService categoryService) : ControllerBase
 {
