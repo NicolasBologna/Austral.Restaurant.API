@@ -41,13 +41,18 @@ public class UserService(IMapper mapper, IUserRepository userRepository) : IUser
     {
         var user = _userRepository.GetById(userId);
         if (user == null)
+        {
             throw new Exception("El usuario que intenta modificar no existe.");
-
-        if (_userRepository.RestaurantNameExists(request.RestaurantName))
+        }
+        if (_userRepository.RestaurantNameExists(request.RestaurantName)
+            && !string.Equals(user.RestaurantName, request.RestaurantName, StringComparison.OrdinalIgnoreCase))
+        {
             throw new Exception("Ya existe un usuario con ese nombre de restaurante.");
+        }
 
         _mapper.Map(request, user);
         _userRepository.SaveChanges();
+
 
         return _mapper.Map<UserResponseDto>(user);
     }
