@@ -12,6 +12,7 @@ public class UsersController(IUserService userService) : ControllerBase
 {
     private readonly IUserService _userService = userService;
 
+    [AllowAnonymous]
     [HttpGet]
     public IActionResult GetAll()
     {
@@ -20,6 +21,7 @@ public class UsersController(IUserService userService) : ControllerBase
         return Ok(users);
     }
 
+    [AllowAnonymous]
     [HttpGet("{userId}")]
     public IActionResult GetById(int userId)
     {
@@ -28,6 +30,7 @@ public class UsersController(IUserService userService) : ControllerBase
         return Ok(user);
     }
 
+    [AllowAnonymous]
     [HttpPost]
     public IActionResult Create(CreateUserRequestDto createUserRequest)
     {

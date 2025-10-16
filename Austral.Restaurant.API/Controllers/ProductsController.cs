@@ -6,21 +6,21 @@ using Austral.Restaurant.API.Services.Interfaces;
 
 namespace Austral.Restaurant.API.Controllers;
 
+[Authorize]
 [Route("api/products")]
 [ApiController]
 public class ProductsController(IProductService productService) : ControllerBase
 {
     private readonly IProductService _productService = productService;
 
-    [HttpGet("~/api/users/{userId}/products")]
     [AllowAnonymous]
+    [HttpGet("~/api/users/{userId}/products")]
     public IActionResult GetAll(int userId, [FromQuery] int? categoryId, [FromQuery] bool discounted)
     {
         var products = _productService.GetAllByUserIdAsync(userId, categoryId, discounted);
         return Ok(products);
     }
 
-    [Authorize]
     [HttpGet("me")]
     public IActionResult GetMyProducts([FromQuery] int? categoryId, [FromQuery] bool discounted)
     {
@@ -37,8 +37,8 @@ public class ProductsController(IProductService productService) : ControllerBase
         return Ok(products);
     }
 
-    [HttpGet("{productId}")]
     [AllowAnonymous]
+    [HttpGet("{productId}")]
     public IActionResult GetById(int productId)
     {
         var product = _productService.GetByProductId(productId);
@@ -51,7 +51,6 @@ public class ProductsController(IProductService productService) : ControllerBase
         return Ok(product);
     }
 
-    [Authorize]
     [HttpPost]
     public IActionResult Create([FromBody] CreateProductRequestDto request)
     {

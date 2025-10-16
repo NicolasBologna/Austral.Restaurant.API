@@ -1,33 +1,26 @@
-﻿using Austral.Restaurant.API.Models.Dtos.Requests;
+﻿using Microsoft.AspNetCore.Mvc;
+using Austral.Restaurant.API.Models.Dtos.Requests;
 using Austral.Restaurant.API.Services.Interfaces;
-using Microsoft.AspNetCore.Mvc;
 
-namespace Austral.Restaurant.API.Controllers
+namespace Austral.Restaurant.API.Controllers;
+
+[Route("api/[controller]")]
+[ApiController]
+public class AuthenticationController(ITokenService tokenService, IUserService userService) : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class AuthenticationController : ControllerBase
-    {
-        private readonly ITokenService _tokenService;
-        private readonly IUserService _userService;
+    private readonly ITokenService _tokenService = tokenService;
+    private readonly IUserService _userService = userService;
 
-        public AuthenticationController(ITokenService tokenService, IUserService userService)
+    [HttpPost("login")]
+    public IActionResult Login([FromBody] AuthenticationRequestDto request)
+    {
+        var user = _userService.ValidateUser(request);
+        if (user == null)
         {
-            _tokenService = tokenService;
-            _userService = userService;
+            return Unauthorized("Invalid username or password.");
         }
-    
-        [HttpPost("login")]
-        public IActionResult Login([FromBody] AuthenticationRequestDto request)
-        {
-            var user = _userService.ValidateUser(request);
-            if (user == null)
-            {
-                return Unauthorized("Invalid username or password.");
-            }
-    
-            var token = _tokenService.GenerateToken(user);
-            return Ok(new { Token = token });
-        }
+
+        var token = _tokenService.GenerateToken(user);
+        return Ok(new { Token = token });
     }
 }
