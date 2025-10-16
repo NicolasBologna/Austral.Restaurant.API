@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Austral.Restaurant.API.Models.Dtos.Requests;
 using Austral.Restaurant.API.Services.Interfaces;
 
@@ -11,6 +12,7 @@ public class AuthenticationController(ITokenService tokenService, IUserService u
     private readonly ITokenService _tokenService = tokenService;
     private readonly IUserService _userService = userService;
 
+    [AllowAnonymous]
     [HttpPost("login")]
     public IActionResult Login([FromBody] AuthenticationRequestDto request)
     {
