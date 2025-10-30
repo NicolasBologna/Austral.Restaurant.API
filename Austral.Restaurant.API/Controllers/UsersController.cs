@@ -3,55 +3,61 @@ using Austral.Restaurant.API.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Austral.Restaurant.API.Controllers;
-
-[Authorize]
-[Route("api/users")]
-[ApiController]
-public class UsersController(IUserService userService) : ControllerBase
+namespace Austral.Restaurant.API.Controllers
 {
-    private readonly IUserService _userService = userService;
-
-    [AllowAnonymous]
-    [HttpGet]
-    public IActionResult GetAll()
+    [Authorize]
+    [Route("api/users")]
+    [ApiController]
+    public class UsersController : ControllerBase
     {
-        var users = _userService.GetAll();
+        private readonly IUserService _userService;
 
-        return Ok(users);
-    }
+        public UsersController(IUserService userService)
+        {
+            _userService = userService;
+        }
 
-    [AllowAnonymous]
-    [HttpGet("{userId}")]
-    public IActionResult GetById(int userId)
-    {
-        var user = _userService.GetUserById(userId);
+        [AllowAnonymous]
+        [HttpGet]
+        public IActionResult GetAll()
+        {
+            var users = _userService.GetAll();
 
-        return Ok(user);
-    }
+            return Ok(users);
+        }
 
-    [AllowAnonymous]
-    [HttpPost]
-    public IActionResult Create(CreateUserRequestDto createUserRequest)
-    {
-        var newUser = _userService.CreateUser(createUserRequest);
+        [AllowAnonymous]
+        [HttpGet("{userId}")]
+        public IActionResult GetById(int userId)
+        {
+            var user = _userService.GetUserById(userId);
 
-        return Ok(newUser);
-    }
+            return Ok(user);
+        }
 
-    [HttpPut("{userId}")]
-    public IActionResult Update(int userId, UpdateUserRequestDto updateUserRequest)
-    {
-        var updatedUser = _userService.UpdateUser(userId, updateUserRequest);
+        [AllowAnonymous]
+        [HttpPost]
+        public IActionResult Create(CreateUserRequestDto createUserRequest)
+        {
+            var newUser = _userService.CreateUser(createUserRequest);
 
-        return Ok(updatedUser);
-    }
+            return Ok(newUser);
+        }
 
-    [HttpDelete("{userId}")]
-    public IActionResult Delete(int userId)
-    {
-        _userService.DeleteUser(userId);
+        [HttpPut("{userId}")]
+        public IActionResult Update(int userId, UpdateUserRequestDto updateUserRequest)
+        {
+            var updatedUser = _userService.UpdateUser(userId, updateUserRequest);
 
-        return Ok();
+            return Ok(updatedUser);
+        }
+
+        [HttpDelete("{userId}")]
+        public IActionResult Delete(int userId)
+        {
+            _userService.DeleteUser(userId);
+
+            return Ok();
+        }
     }
 }

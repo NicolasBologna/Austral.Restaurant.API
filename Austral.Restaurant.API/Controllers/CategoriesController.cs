@@ -4,47 +4,53 @@ using Microsoft.AspNetCore.Mvc;
 using Austral.Restaurant.API.Models.Dtos.Requests;
 using Austral.Restaurant.API.Services.Interfaces;
 
-namespace Austral.Restaurant.API.Controllers;
-
-[Authorize]
-[Route("api/categories")]
-[ApiController]
-public class CategoriesController(ICategoryService categoryService) : ControllerBase
+namespace Austral.Restaurant.API.Controllers
 {
-    private readonly ICategoryService _categoryService = categoryService;
-
-    [AllowAnonymous]
-    [HttpGet("~/api/users/{userId}/categories")]
-    public IActionResult GetAllByUserId(int userId)
+    [Authorize]
+    [Route("api/categories")]
+    [ApiController]
+    public class CategoriesController : ControllerBase
     {
-        var categories = _categoryService.GetAllByUserId(userId);
+        private readonly ICategoryService _categoryService;
 
-        return Ok(categories);
-    }
+        public CategoriesController(ICategoryService categoryService)
+        {
+            _categoryService = categoryService;
+        }
 
-    [HttpPost]
-    public IActionResult Create(CreateCategoryRequestDto createCategoryRequest)
-    {
-        int userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "");
+        [AllowAnonymous]
+        [HttpGet("~/api/users/{userId}/categories")]
+        public IActionResult GetAllByUserId(int userId)
+        {
+            var categories = _categoryService.GetAllByUserId(userId);
 
-        var newCategory = _categoryService.CreateCategory(createCategoryRequest, userId);
+            return Ok(categories);
+        }
 
-        return Ok(newCategory);
-    }
+        [HttpPost]
+        public IActionResult Create(CreateCategoryRequestDto createCategoryRequest)
+        {
+            int userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "");
 
-    [HttpPut("{categoryId}")]
-    public IActionResult Update(int categoryId, UpdateCategoryRequestDto updateCategoryRequest)
-    {
-        var updatedCategory = _categoryService.UpdateCategory(categoryId, updateCategoryRequest);
+            var newCategory = _categoryService.CreateCategory(createCategoryRequest, userId);
 
-        return Ok(updatedCategory);
-    }
+            return Ok(newCategory);
+        }
 
-    [HttpDelete("{categoryId}")]
-    public IActionResult Delete(int categoryId)
-    {
-        _categoryService.Delete(categoryId);
+        [HttpPut("{categoryId}")]
+        public IActionResult Update(int categoryId, UpdateCategoryRequestDto updateCategoryRequest)
+        {
+            var updatedCategory = _categoryService.UpdateCategory(categoryId, updateCategoryRequest);
 
-        return Ok();
+            return Ok(updatedCategory);
+        }
+
+        [HttpDelete("{categoryId}")]
+        public IActionResult Delete(int categoryId)
+        {
+            _categoryService.Delete(categoryId);
+
+            return Ok();
+        }
     }
 }

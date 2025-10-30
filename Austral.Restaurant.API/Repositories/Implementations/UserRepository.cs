@@ -3,60 +3,66 @@ using Austral.Restaurant.API.Entities;
 using Austral.Restaurant.API.Models.Dtos.Requests;
 using Austral.Restaurant.API.Repositories.Interfaces;
 
-namespace Austral.Restaurant.API.Repositories.Implementations;
-
-public class UserRepository(RestaurantApiContext context) : IUserRepository
+namespace Austral.Restaurant.API.Repositories.Implementations
 {
-    private readonly RestaurantApiContext _context = context;
-
-    public IEnumerable<User> GetAll()
+    public class UserRepository : IUserRepository
     {
-        return _context.Users.AsEnumerable();
-    }
+        private readonly RestaurantApiContext _context;
 
-    public User? GetById(int userId)
-    {
-        return _context.Users.SingleOrDefault(u => u.Id == userId);
-    }
-
-    public User Create(User newUser)
-    {
-        var user = _context.Users.Add(newUser).Entity;
-        _context.SaveChanges();
-
-        return user;
-    }
-
-    public void DeleteUser(int userId)
-    {
-        var user = _context.Users.FirstOrDefault(x => x.Id == userId);
-
-        if (user == null)
+        public UserRepository(RestaurantApiContext context)
         {
-            throw new Exception("El usuario que intenta eliminar no existe.");
+            _context = context;
         }
 
-        _context.Users.Remove(user);
-        _context.SaveChanges();
-    }
+        public IEnumerable<User> GetAll()
+        {
+            return _context.Users.AsEnumerable();
+        }
 
-    public bool CheckIfUserExists(int userId)
-    {
-        return _context.Users.Any(user => user.Id == userId);
-    }
+        public User? GetById(int userId)
+        {
+            return _context.Users.SingleOrDefault(u => u.Id == userId);
+        }
 
-    public User? ValidateUser(AuthenticationRequestDto authRequestBody)
-    {
-        return _context.Users.FirstOrDefault(x => x.RestaurantName == authRequestBody.RestaurantName && x.Password == authRequestBody.Password);
-    }
+        public User Create(User newUser)
+        {
+            var user = _context.Users.Add(newUser).Entity;
+            _context.SaveChanges();
 
-    public bool RestaurantNameExists(string restaurantName)
-    {
-        return _context.Users.Any(u => u.RestaurantName.ToLower() == restaurantName.ToLower());
-    }
+            return user;
+        }
 
-    public void SaveChanges()
-    {
-        _context.SaveChanges();
+        public void DeleteUser(int userId)
+        {
+            var user = _context.Users.FirstOrDefault(x => x.Id == userId);
+
+            if (user == null)
+            {
+                throw new Exception("El usuario que intenta eliminar no existe.");
+            }
+
+            _context.Users.Remove(user);
+            _context.SaveChanges();
+        }
+
+        public bool CheckIfUserExists(int userId)
+        {
+            return _context.Users.Any(user => user.Id == userId);
+        }
+
+        public User? ValidateUser(AuthenticationRequestDto authRequestBody)
+        {
+            return _context.Users.FirstOrDefault(x => x.RestaurantName == authRequestBody.RestaurantName && x.Password == authRequestBody.Password);
+        }
+
+        public bool RestaurantNameExists(string restaurantName)
+        {
+            return _context.Users.Any(u => u.RestaurantName.ToLower() == restaurantName.ToLower());
+        }
+
+        public void SaveChanges()
+        {
+            _context.SaveChanges();
+        }
     }
 }

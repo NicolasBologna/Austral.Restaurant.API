@@ -9,9 +9,14 @@ namespace Austral.Restaurant.API.Controllers;
 [Authorize]
 [Route("api/products")]
 [ApiController]
-public class ProductsController(IProductService productService) : ControllerBase
+public class ProductsController : ControllerBase
 {
-    private readonly IProductService _productService = productService;
+    private readonly IProductService _productService;
+
+    public ProductsController(IProductService productService)
+    {
+        _productService = productService;
+    }
 
     [AllowAnonymous]
     [HttpGet("~/api/users/{userId}/products")]

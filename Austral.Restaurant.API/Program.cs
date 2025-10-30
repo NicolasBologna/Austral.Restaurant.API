@@ -7,6 +7,7 @@ using Austral.Restaurant.API.Repositories.Implementations;
 using Austral.Restaurant.API.Repositories.Interfaces;
 using Austral.Restaurant.API.Services.Implementations;
 using Austral.Restaurant.API.Services.Interfaces;
+using AutoMapper;
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -5,94 +5,101 @@ using Austral.Restaurant.API.Models.Dtos.Responses;
 using Austral.Restaurant.API.Repositories.Interfaces;
 using Austral.Restaurant.API.Services.Interfaces;
 
-namespace Austral.Restaurant.API.Services.Implementations;
-
-public class ProductService(IProductRepository productRepository, IMapper mapper) : IProductService
+namespace Austral.Restaurant.API.Services.Implementations
 {
-    private readonly IProductRepository _productRepository = productRepository;
-    private readonly IMapper _mapper = mapper;
-
-    public ProductResponseDto CreateForUser(CreateProductRequestDto request, int userId)
+    public class ProductService : IProductService
     {
-        var product = _mapper.Map<Product>(request);
+        private readonly IProductRepository _productRepository;
+        private readonly IMapper _mapper;
 
-        product.UserId = userId;
-        product.User = null;
-        product.Category = null;
+        public ProductService(IProductRepository productRepository, IMapper mapper)
+        {
+            _productRepository = productRepository;
+            _mapper = mapper;
+        }
 
-        var created = _productRepository.CreateProduct(product);
+        public ProductResponseDto CreateForUser(CreateProductRequestDto request, int userId)
+        {
+            var product = _mapper.Map<Product>(request);
 
-        var withCategory = _productRepository.GetByProductId(created.Id);
+            product.UserId = userId;
+            product.User = null;
+            product.Category = null;
 
-        return _mapper.Map<ProductResponseDto>(withCategory);
-    }
+            var created = _productRepository.CreateProduct(product);
 
-    public IEnumerable<ProductResponseDto> GetAll()
-    {
-        IEnumerable<Product> products = _productRepository.GetAll();
-        return _mapper.Map<IEnumerable<ProductResponseDto>>(products);
-    }
+            var withCategory = _productRepository.GetByProductId(created.Id);
 
-    public ProductResponseDto UpdateProduct(int id, UpdateProductRequestDto request)
-    {
-        Product? existingProduct = _productRepository.GetByProductId(id);
+            return _mapper.Map<ProductResponseDto>(withCategory);
+        }
 
-        if (existingProduct == null)
-            throw new Exception("El producto que intenta modificar no existe.");
+        public IEnumerable<ProductResponseDto> GetAll()
+        {
+            IEnumerable<Product> products = _productRepository.GetAll();
+            return _mapper.Map<IEnumerable<ProductResponseDto>>(products);
+        }
 
-        _mapper.Map(request, existingProduct);
-        _productRepository.UpdateProduct(existingProduct);
+        public ProductResponseDto UpdateProduct(int id, UpdateProductRequestDto request)
+        {
+            Product? existingProduct = _productRepository.GetByProductId(id);
 
-        var withCategory = _productRepository.GetByProductId(existingProduct.Id);
+            if (existingProduct == null)
+                throw new Exception("El producto que intenta modificar no existe.");
 
-        return _mapper.Map<ProductResponseDto>(withCategory);
-    }
+            _mapper.Map(request, existingProduct);
+            _productRepository.UpdateProduct(existingProduct);
 
-    public ProductResponseDto ActivateHappyHour(int productId)
-    {
-        Product? product = _productRepository.GetByProductId(productId);
-        if (product == null)
-            throw new Exception("Producto no encontrado.");
+            var withCategory = _productRepository.GetByProductId(existingProduct.Id);
 
-        product.HasHappyHour = !product.HasHappyHour;
-        _productRepository.UpdateProduct(product);
+            return _mapper.Map<ProductResponseDto>(withCategory);
+        }
 
-        var withCategory = _productRepository.GetByProductId(product.Id);
+        public ProductResponseDto ActivateHappyHour(int productId)
+        {
+            Product? product = _productRepository.GetByProductId(productId);
+            if (product == null)
+                throw new Exception("Producto no encontrado.");
 
-        return _mapper.Map<ProductResponseDto>(withCategory);
-    }
+            product.HasHappyHour = !product.HasHappyHour;
+            _productRepository.UpdateProduct(product);
 
-    public ProductResponseDto SetDiscount(int productId, int discount)
-    {
-        if (discount < 0 || discount > 100)
-            throw new ArgumentException("El descuento debe estar entre 0 y 100.");
+            var withCategory = _productRepository.GetByProductId(product.Id);
 
-        Product? product = _productRepository.GetByProductId(productId);
-        if (product == null)
-            throw new Exception("Producto no encontrado.");
+            return _mapper.Map<ProductResponseDto>(withCategory);
+        }
 
-        product.Discount = discount;
-        _productRepository.UpdateProduct(product);
+        public ProductResponseDto SetDiscount(int productId, int discount)
+        {
+            if (discount < 0 || discount > 100)
+                throw new ArgumentException("El descuento debe estar entre 0 y 100.");
 
-        var withCategory = _productRepository.GetByProductId(product.Id);
+            Product? product = _productRepository.GetByProductId(productId);
+            if (product == null)
+                throw new Exception("Producto no encontrado.");
 
-        return _mapper.Map<ProductResponseDto>(withCategory);
-    }
+            product.Discount = discount;
+            _productRepository.UpdateProduct(product);
 
-    public void Delete(int id)
-    {
-        _productRepository.DeleteProduct(id);
-    }
+            var withCategory = _productRepository.GetByProductId(product.Id);
 
-    public ProductResponseDto GetByProductId(int productId)
-    {
-        Product? product = _productRepository.GetByProductId(productId);
-        return _mapper.Map<ProductResponseDto>(product);
-    }
+            return _mapper.Map<ProductResponseDto>(withCategory);
+        }
 
-    public IEnumerable<ProductResponseDto> GetAllByUserIdAsync(int userId, int? categoryId = null, bool discounted = false)
-    {
-        IEnumerable<Product> products = _productRepository.GetProductsByFilter(userId, categoryId, discounted);
-        return _mapper.Map<IEnumerable<ProductResponseDto>>(products);
+        public void Delete(int id)
+        {
+            _productRepository.DeleteProduct(id);
+        }
+
+        public ProductResponseDto GetByProductId(int productId)
+        {
+            Product? product = _productRepository.GetByProductId(productId);
+            return _mapper.Map<ProductResponseDto>(product);
+        }
+
+        public IEnumerable<ProductResponseDto> GetAllByUserIdAsync(int userId, int? categoryId = null, bool discounted = false)
+        {
+            IEnumerable<Product> products = _productRepository.GetProductsByFilter(userId, categoryId, discounted);
+            return _mapper.Map<IEnumerable<ProductResponseDto>>(products);
+        }
     }
 }

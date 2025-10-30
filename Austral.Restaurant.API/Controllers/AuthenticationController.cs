@@ -7,10 +7,16 @@ namespace Austral.Restaurant.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class AuthenticationController(ITokenService tokenService, IUserService userService) : ControllerBase
+public class AuthenticationController : ControllerBase
 {
-    private readonly ITokenService _tokenService = tokenService;
-    private readonly IUserService _userService = userService;
+    private readonly ITokenService _tokenService;
+    private readonly IUserService _userService;
+
+    public AuthenticationController(ITokenService tokenService, IUserService userService)
+    {
+        _tokenService = tokenService;
+        _userService = userService;
+    }
 
     [AllowAnonymous]
     [HttpPost("login")]

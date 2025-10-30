@@ -5,66 +5,74 @@ using Austral.Restaurant.API.Models.Dtos.Responses;
 using Austral.Restaurant.API.Repositories.Interfaces;
 using Austral.Restaurant.API.Services.Interfaces;
 
-namespace Austral.Restaurant.API.Services.Implementations;
-
-public class UserService(IMapper mapper, IUserRepository userRepository) : IUserService
+namespace Austral.Restaurant.API.Services.Implementations
 {
-    private readonly IMapper _mapper = mapper;
-    private readonly IUserRepository _userRepository = userRepository;
-
-    public IEnumerable<UserResponseDto> GetAll()
+    public class UserService : IUserService
     {
-        var users = _userRepository.GetAll();
+        private readonly IMapper _mapper;
+        private readonly IUserRepository _userRepository;
 
-        return _mapper.Map<IEnumerable<UserResponseDto>>(users);
-    }
-
-    public UserResponseDto? GetUserById(int id)
-    {
-        var user = _userRepository.GetById(id);
-
-        return _mapper.Map<UserResponseDto>(user);
-    }
-
-    public UserResponseDto CreateUser(CreateUserRequestDto request)
-    {
-        if (_userRepository.RestaurantNameExists(request.RestaurantName)) 
-            throw new Exception("Ya existe un usuario con ese nombre de restaurante.");
-
-        var requestUser = _mapper.Map<User>(request);
-        var createdUser = _userRepository.Create(requestUser);
-
-        return _mapper.Map<UserResponseDto>(createdUser);
-    }
-
-    public UserResponseDto UpdateUser(int userId, UpdateUserRequestDto request)
-    {
-        var user = _userRepository.GetById(userId);
-        if (user == null)
+        public UserService(IMapper mapper, IUserRepository userRepository)
         {
-            throw new Exception("El usuario que intenta modificar no existe.");
-        }
-        if (_userRepository.RestaurantNameExists(request.RestaurantName)
-            && !string.Equals(user.RestaurantName, request.RestaurantName, StringComparison.OrdinalIgnoreCase))
-        {
-            throw new Exception("Ya existe un usuario con ese nombre de restaurante.");
+            _mapper = mapper;
+            _userRepository = userRepository;
         }
 
-        _mapper.Map(request, user);
-        _userRepository.SaveChanges();
+        public IEnumerable<UserResponseDto> GetAll()
+        {
+            var users = _userRepository.GetAll();
+
+            return _mapper.Map<IEnumerable<UserResponseDto>>(users);
+        }
+
+        public UserResponseDto? GetUserById(int id)
+        {
+            var user = _userRepository.GetById(id);
+
+            return _mapper.Map<UserResponseDto>(user);
+        }
+
+        public UserResponseDto CreateUser(CreateUserRequestDto request)
+        {
+            if (_userRepository.RestaurantNameExists(request.RestaurantName)) 
+                throw new Exception("Ya existe un usuario con ese nombre de restaurante.");
+
+            var requestUser = _mapper.Map<User>(request);
+            var createdUser = _userRepository.Create(requestUser);
+
+            return _mapper.Map<UserResponseDto>(createdUser);
+        }
+
+        public UserResponseDto UpdateUser(int userId, UpdateUserRequestDto request)
+        {
+            var user = _userRepository.GetById(userId);
+            if (user == null)
+            {
+                throw new Exception("El usuario que intenta modificar no existe.");
+            }
+            if (_userRepository.RestaurantNameExists(request.RestaurantName)
+                && !string.Equals(user.RestaurantName, request.RestaurantName, StringComparison.OrdinalIgnoreCase))
+            {
+                throw new Exception("Ya existe un usuario con ese nombre de restaurante.");
+            }
+
+            _mapper.Map(request, user);
+            _userRepository.SaveChanges();
 
 
-        return _mapper.Map<UserResponseDto>(user);
+            return _mapper.Map<UserResponseDto>(user);
+        }
+
+        public void DeleteUser(int id)
+        {
+            _userRepository.DeleteUser(id);
+        }
+
+        public UserResponseDto? ValidateUser(AuthenticationRequestDto authentication)
+        {
+            var user = _userRepository.ValidateUser(authentication);
+            return _mapper.Map<UserResponseDto>(user);
+        }
     }
 
-    public void DeleteUser(int id)
-    {
-        _userRepository.DeleteUser(id);
-    }
-
-    public UserResponseDto? ValidateUser(AuthenticationRequestDto authentication)
-    {
-        var user = _userRepository.ValidateUser(authentication);
-        return _mapper.Map<UserResponseDto>(user);
-    }
 }
